@@ -34,10 +34,26 @@ class ProductController extends Controller {
     $product = Product::create($data);
     return (new ProductResource($product))->response()->setStatusCode(201);
   }
+  /**
+   * Verifica si una imagen está siendo utilizada por otros productos
+   */
+  private function isImageUsedByOtherProducts($imagePath, $excludeProductId = null)
+  {
+    $query = Product::where('imagen', $imagePath);
+    
+    if ($excludeProductId) {
+      $query->where('id', '!=', $excludeProductId);
+    }
+    
+    return $query->exists();
+  }
   public function update(ProductRequest $r, Product $producto){
     $data = $r->validated();
     if($r->hasFile('imagen')){
-      if($producto->imagen) Storage::disk(config('filesystems.default'))->delete($producto->imagen);
+      // Solo eliminar la imagen anterior si no está siendo utilizada por otros productos
+      if($producto->imagen && !$this->isImageUsedByOtherProducts($producto->imagen, $producto->id)) {
+        Storage::disk(config('filesystems.default'))->delete($producto->imagen);
+      }
       $path = Storage::disk(config('filesystems.default'))->putFile('imagenes', $r->file('imagen'));
       $data['imagen'] = $path;
     }
@@ -45,7 +61,10 @@ class ProductController extends Controller {
     return new ProductResource($producto);
   }
   public function destroy(Product $producto){
-    if($producto->imagen) Storage::disk(config('filesystems.default'))->delete($producto->imagen);
+    // Solo eliminar la imagen si no está siendo utilizada por otros productos
+    if($producto->imagen && !$this->isImageUsedByOtherProducts($producto->imagen, $producto->id)) {
+      Storage::disk(config('filesystems.default'))->delete($producto->imagen);
+    }
     $producto->delete();
     return response()->noContent();
   }
@@ -85,8 +104,8 @@ class ProductController extends Controller {
 
     // Manejar imagen si existe
     if ($request->hasFile('imagen')) {
-      // Eliminar imagen anterior si existe
-      if ($producto->imagen) {
+      // Solo eliminar imagen anterior si existe y no está siendo utilizada por otros productos
+      if ($producto->imagen && !$this->isImageUsedByOtherProducts($producto->imagen, $producto->id)) {
         Storage::disk(config('filesystems.default'))->delete($producto->imagen);
       }
       

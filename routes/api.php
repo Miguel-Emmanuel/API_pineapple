@@ -10,12 +10,7 @@ Route::post('auth/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('auth/me', [AuthController::class, 'me']);
     Route::post('auth/logout', [AuthController::class, 'logout']);
-    
-    // Rutas de productos
     Route::apiResource('productos', ProductController::class);
-    
-    // ⚠️ RUTA ESPECÍFICA para actualizar con FormData (POST + method spoofing)
-    Route::post('productos/{producto}/update', [ProductController::class, 'updateWithFormData']);
 });
 
 // ===== RUTAS DE DEPURACIÓN =====
