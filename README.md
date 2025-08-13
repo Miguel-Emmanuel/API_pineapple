@@ -29,7 +29,7 @@ APP_ENV=production
 APP_KEY=base64:tu_app_key
 APP_DEBUG=false
 APP_URL=https://tu-app.onrender.com
-FRONTEND_URL=https://tu-frontend.onrender.com
+FRONTEND_URL=https://pineapple-ruddy.vercel.app
 
 DB_CONNECTION=pgsql
 DB_HOST=tu-host.render.com

@@ -18,11 +18,32 @@ Route::middleware('auth:sanctum')->group(function () {
 // Ruta para probar conexión a la base de datos
 Route::get('test-db', function () {
     try {
-        DB::connection()->getPdo();
+        $connection = DB::connection();
+        $pdo = $connection->getPdo();
 
-        return 'Conexión exitosa a la DB!';
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Conexión exitosa a la DB!',
+            'database' => [
+                'driver' => config('database.default'),
+                'host' => config('database.connections.'.config('database.default').'.host'),
+                'port' => config('database.connections.'.config('database.default').'.port'),
+                'database' => config('database.connections.'.config('database.default').'.database'),
+                'username' => config('database.connections.'.config('database.default').'.username'),
+            ],
+            'tables_count' => DB::select('SELECT COUNT(*) as count FROM information_schema.tables WHERE table_schema = ?', [config('database.connections.'.config('database.default').'.database')])[0]->count ?? 'N/A',
+        ]);
     } catch (Exception $e) {
-        return 'Error: '.$e->getMessage();
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage(),
+            'database_config' => [
+                'driver' => config('database.default'),
+                'host' => config('database.connections.'.config('database.default').'.host'),
+                'port' => config('database.connections.'.config('database.default').'.port'),
+                'database' => config('database.connections.'.config('database.default').'.database'),
+            ],
+        ], 500);
     }
 });
 

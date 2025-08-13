@@ -1,0 +1,72 @@
+# Git files
+.git
+.gitignore
+.gitattributes
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.example
+
+# Node modules y frontend build
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dist/
+build/
+
+# Laravel specific
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+bootstrap/cache/*
+!storage/logs/.gitkeep
+!storage/framework/cache/.gitkeep
+!storage/framework/sessions/.gitkeep
+!storage/framework/views/.gitkeep
+!bootstrap/cache/.gitkeep
+
+# Composer
+/vendor/
+
+# Testing
+.phpunit.result.cache
+/tests/_output/*
+coverage/
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Documentation
+README.md
+*.md
+docs/
+
+# Backup files
+*.bak
+*.backup
+*.tmp
+
+# Build scripts que ya no necesitamos
+render-build.sh
+Procfile
+
+# Deploy configs
+docker-compose.yml
+docker-compose.override.yml
