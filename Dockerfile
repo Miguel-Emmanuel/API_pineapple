@@ -50,13 +50,13 @@ WORKDIR /var/www/html
 COPY composer.json composer.lock ./
 
 # Instalar dependencias PHP con permiso de superuser
-RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --no-scripts --no-autoloader --prefer-dist
+RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --no-scripts --no-autoload --prefer-dist
 
 # Copiar toda la aplicación
 COPY . .
 
-# Completar instalación y optimizar autoloader con permiso de superuser
-RUN COMPOSER_ALLOW_SUPERUSER=1 composer dump-autoloader --optimize
+# Completar instalación y optimizar autoload con permiso de superuser
+RUN COMPOSER_ALLOW_SUPERUSER=1 composer dump-autoload --optimize
 
 # Configurar permisos correctos para Laravel
 RUN chown -R www-data:www-data /var/www/html \
