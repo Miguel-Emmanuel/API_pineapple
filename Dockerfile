@@ -78,6 +78,10 @@ echo "🚀 Iniciando aplicación Laravel..."\n\
 echo "🔍 Verificando conexión a base de datos..."\n\
 timeout 30 bash -c "until php artisan tinker --execute=\"DB::connection()->getPdo();\" > /dev/null 2>&1; do sleep 2; done" || echo "⚠️  Base de datos no disponible, continuando..."\n\
 \n\
+# Crear enlace simbólico para storage (FIX para imágenes)\n\
+echo "🔗 Creando enlace simbólico para storage..."\n\
+php artisan storage:link || echo "⚠️  Error creando enlace de storage"\n\
+\n\
 # Limpiar cachés\n\
 echo "🧹 Limpiando cachés..."\n\
 php artisan config:clear || true\n\
@@ -97,12 +101,12 @@ php artisan migrate --force || echo "⚠️  Error en migraciones, continuando..
 \n\
 # Configurar tabla de sesiones\n\
 echo "🔐 Configurando sesiones..."\n\
-php artisan session:table --force || true\n\
+php artisan session:table || true\n\
 php artisan migrate --force || echo "⚠️  Error en migración de sesiones"\n\
 \n\
-# Ejecutar seeders si existen\n\
+# Ejecutar seeders con protección contra duplicados\n\
 echo "🌱 Ejecutando seeders..."\n\
-php artisan db:seed --force || echo "ℹ️  No hay seeders o error en seeders"\n\
+php artisan db:seed --force || echo "ℹ️  Seeders ejecutados o ya existen datos"\n\
 \n\
 # Optimizar aplicación\n\
 echo "🔧 Optimizando aplicación..."\n\
